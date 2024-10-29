@@ -8,8 +8,6 @@ import { MongoService } from '../../services/Mongoservice';
 import { errorMiddleware, successMiddleware } from '../../middleware/responseAPI.middleware';
 import genToken, { genMFACode } from '../../services/util';
 import logger from '../../logger';
-import { sendEmail } from '../../services/nodemail';
-const SuperAdmin_Mail = process.env.SuperAdmin_Mail || ''
 
 class userController implements Controller {
     public router = Router();
