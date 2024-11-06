@@ -27,7 +27,7 @@ async function startgraphqlSever(){
       })
     await apolloServer.start()
     logger.info('apollo server started')
-    app.use('/graphql', expressMiddleware(apolloServer))
+    app.use('/api/graphql', expressMiddleware(apolloServer))
 }
 
 
@@ -86,7 +86,7 @@ app.get("/test", (req, res) => {
 });
 
 for (let i = 0; i < controller.length; i++) {
-    app.use('/', controller[i].router);
+    app.use('/api/', controller[i].router);
 }
 
 export let httpServer: http.Server | https.Server;

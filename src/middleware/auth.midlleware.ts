@@ -21,7 +21,7 @@ async function authMiddleware(
         const {originalUrl} = req;
         logger.info('req.originalUrl', req.originalUrl); 
 
-        if (originalUrl !== '/USER/getUserProfile' && originalUrl !== '/USER/createUser' && originalUrl !== "/USER/verify_mfa") {
+        if (originalUrl !== '/api/USER/getUserProfile' && originalUrl !== '/api/USER/createUser' && originalUrl !== "/api/USER/verify_mfa") {
             const _id = decryptUserId(authHeader);
             const user = await MongoService.findOne(User, {
                 query: { _id }
