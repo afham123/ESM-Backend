@@ -2,12 +2,13 @@ import { ERROR_MESSAGES, STATUS_CODE, SUCCESS_MESSAGES } from '../../constant'
 import { Router, Request, Response, NextFunction } from 'express';
 import UserValidation from './user.validation';
 import UserModel from './user.model';
-import authMiddleware from '../../middleware/auth.midlleware';
+import authMiddleware, { decryptUserId } from '../../middleware/auth.midlleware';
 import { Controller, RequestWithUser } from '../interface';
 import { MongoService } from '../../services/Mongoservice';
 import { errorMiddleware, successMiddleware } from '../../middleware/responseAPI.middleware';
 import genToken, { genMFACode } from '../../services/util';
 import logger from '../../logger';
+import { sendEmail } from '../../services/nodemail';
 
 class userController implements Controller {
     public router = Router();
@@ -77,7 +78,7 @@ class userController implements Controller {
                     next
                 )
             }
-            const _id = userDoc._id;
+            const {_id} = userDoc;
             const token = await genToken({ _id });
             const MFA_Code = genMFACode() + '';
 
@@ -85,12 +86,12 @@ class userController implements Controller {
                 query: { _id },
                 updateData: { MFA_Code, token }
             })
-            // sendEmail(MFA_Code, SuperAdmin_Mail)
+            sendEmail(MFA_Code,email )
             
             return successMiddleware(
                 {
                     message: SUCCESS_MESSAGES.MFA_CODE_SUCCESS,
-                    data: token
+                    data: ''
                 },
                 request,
                 response,
@@ -124,7 +125,9 @@ class userController implements Controller {
                     next
                 )
             }
-            const _id = userDoc._id;
+            const {_id} = userDoc._id;
+            const oldToken = userDoc.token;
+            decryptUserId(oldToken);
             const token = await genToken({ _id });
 
             await MongoService.findOneAndUpdate(this.User, {
@@ -141,9 +144,9 @@ class userController implements Controller {
                 response,
                 next
             );
-        } catch (error) {
+        } catch (error:any) {
             logger.error(`There was an issue in verifying MFA: ${error}`);
-            return next(error);
+            return next(error.message);
         }
     }
 
