@@ -3,7 +3,7 @@ const user = process.env.Nodemail_email
 
 const genToken = async (data: { _id: string }) => {
     const JWT_SECRET = process.env.JWT_SECRET ?? ""
-    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '30m' });
+    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '1h' });
     return token;
 }
 export const genMFACode = () => Math.floor(100000 + Math.random() * 900000);
@@ -28,7 +28,7 @@ export const mailOption = ( authCode:string, recipient: string)=> {
         html: `<p>Hello <strong>${userName}</strong>,</p>
                  <p>Here is your authentication code:</p>
                  <h2 style="color: #2e86c1;">${authCode}</h2>
-                 <p>This code is valid for <strong>30 minutes</strong>. Please do not share it with anyone for security purposes.</p>
+                 <p>This code is valid for <strong>1 hours</strong>. Please do not share it with anyone for security purposes.</p>
                  <br>
                  <p>Best regards,</p>
                  <p>Mahavir Agencies</p>`, // Plain text body
