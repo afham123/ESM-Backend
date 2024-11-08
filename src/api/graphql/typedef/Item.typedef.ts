@@ -14,5 +14,6 @@ export const Itemtypedef = `
         numericId: Int
         EnqDate: String
         status: String
+        Enq_num: String
     }
 `

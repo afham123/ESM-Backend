@@ -1,5 +1,4 @@
 import * as jwt from 'jsonwebtoken'
-const user = process.env.Nodemail_email
 
 const genToken = async (data: { _id: string }) => {
     const JWT_SECRET = process.env.JWT_SECRET ?? ""
@@ -7,6 +6,37 @@ const genToken = async (data: { _id: string }) => {
     return token;
 }
 export const genMFACode = () => Math.floor(100000 + Math.random() * 900000);
+export function formatDateString() {
+  // Convert the date string to a Date object
+  const date = new Date();
+
+  // Extract day, month, and year
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+
+  // Format as 'dd-mm-yyyy'
+  return `${year}-${month}-${day}`;
+}
+export function formatDate(timestamp:string) {
+  // Convert timestamp to a Date object
+  const date = new Date(timestamp);
+
+  // Extract day, month, and year
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+
+  // Format as 'dd-mm-yyyy'
+  return `${day}-${month}-${year}`;
+}
+export function formatDataObj(date: Date){
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+
+  return `${day}-${month}-${year}`;
+}
 
 export const mailOption = ( authCode:string, recipient: string)=> {
     const userName = 'Admin user';

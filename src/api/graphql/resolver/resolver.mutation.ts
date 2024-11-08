@@ -42,7 +42,7 @@ export const Mutation = {
                 })
             }
             const id = Item._id.toString();
-            addData( id, item)
+            await addData( id, item)
             return { success: true };
         }
         catch(err:any){
@@ -51,11 +51,13 @@ export const Mutation = {
     },
     async deleteItem(_:any, args:any){
         try{
-            const {ids, token} = args;
+            const {ids, token, password} = args;
             const isAllowed = await gqlAuth(token)
             if(!isAllowed){
                 return { msg: "Session expired", success: false};
             } 
+            if(password !=='YashJaiswal@1995')
+                return { msg: "Incorrect deleting password", success: false};
             for(let i=0;i<ids.length;i++){
                 const res = await MongoService.deleteOne(ItemModel, {
                     query: {_id:ids[i]}

@@ -20,7 +20,7 @@ export const query = `
     type Mutation {
         addComment(comment: AddCommentInput!): responseMsg
         addItem(item: AddItemInput!, token: String): responseMsg
-        deleteItem(ids: [ID!], token: String): responseMsg
+        deleteItem(ids: [ID!], token: String, password: String): responseMsg
         uploadItems(Items : [AddItemInput]!, token: String): responseMsg
     }
     type responseMsg{
@@ -54,5 +54,6 @@ export const query = `
         EnqDate: String
         status: String
         _id: String
+        Enq_num: String
     }
 `

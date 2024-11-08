@@ -38,6 +38,9 @@ const ItemSchema = new Schema({
     Supplier_Type : {
         type: String
     },
+    Enq_num:{
+        type: String
+    },
     numericId: {
         type: Number,
         default: 0,

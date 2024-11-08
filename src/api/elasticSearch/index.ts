@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { authInterface } from "./interface";
 import https from "https";
 import logger from "../../logger";
+import { formatDateString } from "../../services/util";
 const username = process.env.ElasticSearch_username || "";
 const password = process.env.ElasticSearch_password || "";
 const ElasticSearch_url = process.env.ElasticSearch_url || "";
@@ -20,6 +21,12 @@ class elasticSearchClass {
     }
     async addData(id: string, data: any) {
         try {
+            console.log('elasticsearch add data', data);
+            if(data.EnqDate=='')
+                data.EnqDate = formatDateString()
+
+            console.log('after format add data', data);
+
             const response = await this.axiosInstance.put(`ma_dict/_doc/${id}`, data)
             console.log('Response addData data:', response.data);
         }

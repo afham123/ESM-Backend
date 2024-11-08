@@ -1,5 +1,6 @@
 import gqlAuth from "../../../middleware/gqlAuth.js"
 import { MongoService } from "../../../services/Mongoservice.js"
+import { formatDataObj } from "../../../services/util.js"
 import { Comment } from "../../comment/comment.interface.js"
 import commentsModel from "../../comment/comment.model.js"
 import { searchAllFields } from "../../elasticSearch/index.js"
@@ -61,8 +62,16 @@ export const Query = {
                 limit : limit,
                 offset : skip
             })
+            const formatData = data.map((e:any)=>{
+
+                if (typeof e.EnqDate === 'object') { // Check if EnqDate is a timestamp
+                    e.EnqDate = formatDataObj(e.EnqDate); // Format only if it’s a timestamp
+                }
+                return e
+            })
+            
             const totalDocs = await MongoService.find(ItemModel, {query : {}});
-            return {data, totalDocs : totalDocs.length, message:"Sucess", success : true}
+            return {data:formatData, totalDocs : totalDocs.length, message:"Sucess", success : true}
         }
         catch(error){
             console.error("Error fetching items:", error);

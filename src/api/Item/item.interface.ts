@@ -10,6 +10,7 @@ export interface Item {
     GST_Turnover: String;
     Remark: String;
     Supplier_Type: String;
+    Enq_num: String;
     numericId: number;
     EnqDate: String
     status: String
