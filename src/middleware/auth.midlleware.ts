@@ -55,13 +55,10 @@ async function authMiddleware(
                 throw new Error(ERROR_MESSAGES.NOT_ACCESS);
             }
         }
-
         next();
-        // return true;
     }
     catch (err) {
-        next(err)
-        // return false;
+        next(err);
     }
 }
 
