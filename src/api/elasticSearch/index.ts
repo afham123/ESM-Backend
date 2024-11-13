@@ -22,7 +22,7 @@ class elasticSearchClass {
     async addData(id: string, data: any) {
         try {
             console.log('elasticsearch add data', data);
-            if(data.EnqDate=='')
+            if (data.EnqDate == '')
                 data.EnqDate = formatDateString()
 
             console.log('after format add data', data);
@@ -53,46 +53,60 @@ class elasticSearchClass {
             logger.error('Error making deleteItem request:', error.message);
         };
     }
-
-    async searchAllFields(searchString: string, scroll_id: string, AdvanceQuery: any) {
-        try {
-            if (scroll_id !== "") return await this.Extendedscroll(scroll_id);
-            
-            const { MatchPhrase, company, name } = AdvanceQuery;
+    async searchQuery(searchString: string, AdvanceQuery: any, limit: number){
+        const { MatchPhrase, company, name } = AdvanceQuery;
             console.log(AdvanceQuery);
             let query;
             if (MatchPhrase) {
                 query = {
-                    multi_match: {
-                        query: MatchPhrase,
-                        type: "phrase",     // Use phrase match
-                        fields: ["*"]       // Search across all fields
+                    size: limit,
+                    query: {
+                        multi_match: {
+                            query: MatchPhrase,
+                            type: "phrase",     // Use phrase match
+                            fields: ["*"]       // Search across all fields
+                        }
                     }
                 }
             }
             else {
                 let fields = ["*"];
                 if (company || name) {
-                    searchString = ""; 
+                    searchString = "";
                     fields = ['company', 'name'];
-                    if(company) searchString+= `company:${AdvanceQuery['company']} `;
-                    if(name)  searchString+= (company? 'AND' : "")+ ` name:${AdvanceQuery['name']}`
+                    if (company) searchString += `company:${AdvanceQuery['company']} `;
+                    if (name) searchString += (company ? 'AND' : "") + ` name:${AdvanceQuery['name']}`
                 }
                 query = {
-                    query_string: {
-                        query: searchString,
-                        fields: fields // Search across all fields_search?scroll=60m
+                    size: limit,
+                    query: {
+                        query_string: {
+                            query: searchString,
+                            fields: fields // Search across all fields_search?scroll=60m
+                        }
                     }
                 };
             }
             console.log(query);
-            const response = await this.axiosInstance.post(`ma_dict/_search?scroll=60m`, { track_total_hits: true, query })
-            const data = response.data.hits.hits.map((e: any) => {
+            const response = await this.axiosInstance.post(`ma_dict/_search?scroll=60m`, {
+                ...query,
+                track_total_hits: true
+            });
+            const data:object[] = response.data.hits.hits.map((e: any) => {
                 const data = e._source;
                 return { ...data, _id: e._id }
             })
-            return { data, totalDocs: response.data.hits.total.value, scroll_id: response.data._scroll_id }
+            return { data, totalDocs: response.data.hits.total.value, scroll_id: '' }
 
+    }
+
+    async searchAllFields(searchString: string, AdvanceQuery: any, skip: number, limit: number) {
+        try {
+            // if (scroll_id !== "") return await this.Extendedscroll(scroll_id);
+            const skipRes = await this.searchQuery(searchString, AdvanceQuery, skip+limit);
+            const data = skipRes.data.slice(skip);
+            const totalDocs = skipRes.totalDocs;
+            return {data, totalDocs, scroll_id: ''};     
         }
         catch (error: any) {
             if (error.response) {

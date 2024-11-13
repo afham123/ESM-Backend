@@ -54,7 +54,7 @@ export const Query = {
                 return { message: "Session expired", success: false, data: null, totalDocs: null, scroll_id: null };
             } 
             if(searchQuery!="" || Object.keys(AdvanceQuery).length!=0){
-                const data = await searchAllFields(searchQuery, scroll_id, AdvanceQuery)
+                const data = await searchAllFields(searchQuery, AdvanceQuery, skip, limit)
                 return {...data, message:"Sucess", success : true};
             }
             const data = await MongoService.find(ItemModel, {
