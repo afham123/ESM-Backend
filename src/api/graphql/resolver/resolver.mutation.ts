@@ -25,16 +25,18 @@ export const Mutation = {
             if(!isAllowed){
                 return { msg: "Session expired", success: false};
             } 
+            console.log(item)
             let Item;
             if(Object.keys(item).includes('_id')){
                 console.log('perform edit');
-                const {_id} = item;
+                let {_id} = item;
+                _id = MongoService.ObjectId(_id);
                 delete item['_id'];
                 Item = await MongoService.findOneAndUpdate(ItemModel, {
                     query : {_id},
-                    updateData : item
+                    updateData : item, 
                 })
-                console.log(Item);
+                console.log('item after edit', Item);
             }
             else{
                 Item = await MongoService.create(ItemModel, {

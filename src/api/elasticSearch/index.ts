@@ -54,7 +54,7 @@ class elasticSearchClass {
         };
     }
     async searchQuery(searchString: string, AdvanceQuery: any, limit: number){
-        const { MatchPhrase, company, name } = AdvanceQuery;
+        const { MatchPhrase, Location, name, SupplierType, Remark } = AdvanceQuery;
             console.log(AdvanceQuery);
             let query;
             if (MatchPhrase) {
@@ -71,11 +71,13 @@ class elasticSearchClass {
             }
             else {
                 let fields = ["*"];
-                if (company || name) {
+                if (Location || name || SupplierType || Remark) {
                     searchString = "";
-                    fields = ['company', 'name'];
-                    if (company) searchString += `company:${AdvanceQuery['company']} `;
-                    if (name) searchString += (company ? 'AND' : "") + ` name:${AdvanceQuery['name']}`
+                    fields = ['location', 'name', 'Supplier_Type', 'Remark'];
+                    if (Location) searchString += `location:${Location} `;
+                    if (name) searchString += (searchString ? 'AND' : "") + ` name:${name} `
+                    if (SupplierType) searchString += (searchString ? 'AND' : "") + ` Supplier_Type:${SupplierType} `
+                    if (Remark) searchString += (searchString ? 'AND' : "") + ` Remark:${Remark}`
                 }
                 query = {
                     size: limit,

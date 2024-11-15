@@ -28,9 +28,11 @@ export const query = `
         msg : String
     }
     input AdvanceQueryInput{
-        company : String
+        Location : String
         name : String
         MatchPhrase : String
+        Remark : String
+        SupplierType : String
     }
     input AddCommentInput{
         user_id: ID!

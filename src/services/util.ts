@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken'
 
 const genToken = async (data: { _id: string }) => {
     const JWT_SECRET = process.env.JWT_SECRET ?? ""
-    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '3h' });
     return token;
 }
 export const genMFACode = () => Math.floor(100000 + Math.random() * 900000);
