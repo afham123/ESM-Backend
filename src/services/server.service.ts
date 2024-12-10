@@ -64,7 +64,7 @@ app.use((req: any, res: any, next: any) => {
 });
 
 app.get("/health", (req, res) => {
-    logger.info("in health route");
+    // logger.info("in health route");
     res.status(200).send("Done");
 });
 
