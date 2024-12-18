@@ -2,7 +2,7 @@ import * as jwt from 'jsonwebtoken'
 
 const genToken = async (data: { _id: string }) => {
     const JWT_SECRET = process.env.JWT_SECRET ?? ""
-    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '3h' });
+    const token = jwt.sign(data, JWT_SECRET, { expiresIn: '6h' });
     return token;
 }
 export const genMFACode = () => Math.floor(100000 + Math.random() * 900000);
@@ -15,7 +15,7 @@ export function formatDateString() {
   const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
   const year = date.getFullYear();
 
-  // Format as 'dd-mm-yyyy'
+  // Format as 'yyyy-mm-dd'
   return `${year}-${month}-${day}`;
 }
 export function formatDate(timestamp:string) {
