@@ -41,8 +41,7 @@ class elasticSearchClass {
     }
     async deleteItem(id: string) {
         try {
-            const response = await this.axiosInstance.delete(`ma_dict/_doc/${id}`);
-            console.log('response deleteItem Data', response);
+            await this.axiosInstance.delete(`ma_dict/_doc/${id}`);
         }
         catch (error: any) {
             if (error.response) {
