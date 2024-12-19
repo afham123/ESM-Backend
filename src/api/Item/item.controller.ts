@@ -69,8 +69,8 @@ class itemController implements Controller {
             let count = 0;
             let len = Items.length > 500 ?  500 :Items.length;
             for(let i=0;i<len;i++){
-                await MongoService.deleteOne(ItemModel, {
-                    query: {_id:Items[i]._ids}
+                await MongoService.deleteOne(this.Item, {
+                    query: {_id:Items[i]._id}
                 })
                 await deleteItem(Items[i]._id.toString());
                 count++;
