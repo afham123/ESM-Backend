@@ -21,14 +21,14 @@ class elasticSearchClass {
     }
     async addData(id: string, data: any) {
         try {
-            console.log('elasticsearch add data', data);
+            logger.info('elasticsearch add data', data);
             if (data.EnqDate == '')
                 data.EnqDate = formatDateString()
 
-            console.log('after format add data', data);
+            logger.info('after format add data', data);
 
             const response = await this.axiosInstance.put(`ma_dict/_doc/${id}`, data)
-            console.log('Response addData data:', response.data);
+            logger.info('Response addData data:', response.data);
         }
         catch (error: any) {
             if (error.response) {
