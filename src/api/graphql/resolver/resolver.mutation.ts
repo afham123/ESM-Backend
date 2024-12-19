@@ -1,3 +1,4 @@
+import logger from "../../../logger/index.js";
 import gqlAuth from "../../../middleware/gqlAuth.js";
 import { MongoService } from "../../../services/Mongoservice.js";
 import commentsModel from "../../comment/comment.model.js";
@@ -80,8 +81,14 @@ export const Mutation = {
             if(!isAllowed){
                 return { msg: "Session expired", success: false};
             } 
-            console.log(Items);
             for(let i=0;i<Items.length;i++){
+                const item = await MongoService.findOne(ItemModel, {
+                    query : Items[i]
+                })
+                if(item){
+                    logger.info('item already exist in DB', item);
+                    continue;
+                }
                 const ItemDoc = await MongoService.create(ItemModel, {
                     insert : Items[i]
                 })
