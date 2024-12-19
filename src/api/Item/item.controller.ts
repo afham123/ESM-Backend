@@ -7,6 +7,7 @@ import { errorMiddleware, successMiddleware } from '../../middleware/responseAPI
 import logger from '../../logger';
 import ItemValidation from './item.validation';
 import ItemModel from './item.model';
+import { deleteItem } from '../elasticSearch';
 
 class itemController implements Controller {
     public router = Router();
@@ -53,7 +54,7 @@ class itemController implements Controller {
         next: NextFunction
     ) => {
         try {
-            const Item = await MongoService.find(this.Item, {
+            const Items = await MongoService.find(this.Item, {
                 query: { "name":"",
                     "category":"",
                     "company":"",
@@ -65,7 +66,23 @@ class itemController implements Controller {
                     "Remark":"",
                     "Supplier_Type":"","Enq_num":"",
             }});
-            console.log(Item.length,Item[0]);
+            let count = 0;
+            for(let i=0;i<Items.length;i++){
+                await MongoService.deleteOne(ItemModel, {
+                    query: {_id:Items[i]._ids}
+                })
+                await deleteItem(Items[i]._id.toString());
+                count++;
+            }
+            successMiddleware(
+                {
+                    message: SUCCESS_MESSAGES.COMMON.UPDATE_SUCCESS.replace(':attribute', 'Item'),
+                    data: {emptyItemfound : Items.length, deletedItems : count}
+                },
+                request,
+                response,
+                next
+            );
         } catch (error) {
             logger.error(`There was an issue in deleting duplicate item: ${error}`);
             return next(error);
