@@ -40,6 +40,36 @@ class itemController implements Controller {
             this.validation.deleteItemValidation(),
             this.deleteItem
         );
+        this.router.post(
+            `${this.path}/deleteEmptyItem`,
+            // authMiddleware,
+            this.deleteEmptyItem
+        )
+    }
+
+    private deleteEmptyItem = async (
+        request: Request,
+        response: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const Item = await MongoService.find(this.Item, {
+                query: { "name":"",
+                    "category":"",
+                    "company":"",
+                    "contact_num":"",
+                    "email":"",
+                    "location":"",
+                    "GST_No":"",
+                    "GST_Turnover":"",
+                    "Remark":"",
+                    "Supplier_Type":"","Enq_num":"",
+            }});
+            console.log(Item.length,Item[0]);
+        } catch (error) {
+            logger.error(`There was an issue in deleting duplicate item: ${error}`);
+            return next(error);
+        }
     }
 
     private updateItem = async (
