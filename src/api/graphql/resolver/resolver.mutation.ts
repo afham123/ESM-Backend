@@ -81,6 +81,7 @@ export const Mutation = {
             if(!isAllowed){
                 return { msg: "Session expired", success: false};
             } 
+            console.log(Items);
             for(let i=0;i<Items.length;i++){
                 const item = await MongoService.findOne(ItemModel, {
                     query : Items[i]
