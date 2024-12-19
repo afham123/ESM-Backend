@@ -67,7 +67,8 @@ class itemController implements Controller {
                     "Supplier_Type":"","Enq_num":"",
             }});
             let count = 0;
-            for(let i=0;i<Items.length;i++){
+            let len = Items.length > 500 ?  500 :Items.length;
+            for(let i=0;i<len;i++){
                 await MongoService.deleteOne(ItemModel, {
                     query: {_id:Items[i]._ids}
                 })
